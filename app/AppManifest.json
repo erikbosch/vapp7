@@ -1,15 +1,27 @@
 {
     "manifestVersion": "v3",
-    "name": "SampleApp",
+    "name": "dogmode",
     "interfaces": [
         {
             "type": "vehicle-signal-interface",
             "config": {
-                "src": "https://github.com/COVESA/vehicle_signal_specification/releases/download/v4.0/vss_rel_4.0.json",
+                "src": "https://github.com/COVESA/vehicle_signal_specification/releases/download/v3.0/vss_rel_3.0.json",
                 "datapoints": {
                     "required": [
                         {
-                            "path": "Vehicle.Speed",
+                            "path": "Vehicle.Cabin.AmbientAirTemperature",
+                            "access": "read"
+                        },
+                        {
+                            "path": "Vehicle.Cabin.DogMode",
+                            "access": "read"
+                        },
+                        {
+                            "path": "Vehicle.Cabin.DogModeTemperature",
+                            "access": "read"
+                        },
+                        {
+                            "path": "Vehicle.Powertrain.Battery.StateOfCharge.Current",
                             "access": "read"
                         }
                     ]
@@ -17,14 +29,24 @@
             }
         },
         {
+            "type": "grpc-interface",
+            "config": {
+                "src": "https://github.com/eclipse/kuksa.val.services/blob/v0.2.0/hvac_service/proto/sdv/edge/comfort/hvac/v1/hvac.proto",
+                "required": {
+                    "methods": [
+                        "SetAcStatus",
+                        "SetTemperature"
+                    ]
+                }
+            }
+        },
+        {
             "type": "pubsub",
             "config": {
-                "reads": [
-                    "sampleapp/getSpeed"
-                ],
                 "writes": [
-                    "sampleapp/getSpeed/response",
-                    "sampleapp/currentSpeed"
+                    "dogmode/ambientAirTemperature",
+                    "dogmode/stateOfCharge",
+                    "dogmode/display"
                 ]
             }
         }
